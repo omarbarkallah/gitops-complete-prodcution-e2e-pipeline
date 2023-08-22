@@ -14,9 +14,7 @@ spec:
     spec:
       containers:
         - name: complete-prodcution-e2e-app
-          image: omarbarkallah/complete-prodcution-e2e-pipeline:1.0.0-22
-          imagePullSecrets:
-            - name: dockerhub-secret
+          image: omarbarkallah/complete-production-e2e-pipeline:1.0.0-22
           resources:
             limits:
               memory: "256Mi"
