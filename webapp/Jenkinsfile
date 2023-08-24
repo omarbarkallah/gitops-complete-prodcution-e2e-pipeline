@@ -26,7 +26,8 @@ pipeline {
             steps {
                 sh """
                     cat webapp/deployment.yaml
-                    sed -i "s|$APP_NAME:.*|$APP_NAME:$IMAGE_TAG|g" webapp/deployment.yaml
+                    awk -v app="$APP_NAME" -v tag="$IMAGE_TAG" '{gsub(app":.*", app":"tag)}1' webapp/deployment.yaml > webapp/deployment_temp.yaml
+                    mv webapp/deployment_temp.yaml webapp/deployment.yaml
                     cat webapp/deployment.yaml
                 """
             }
