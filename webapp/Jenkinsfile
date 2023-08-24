@@ -21,8 +21,6 @@ pipeline {
         }
     
 
-    
-stages {
         stage("Update the Deployment Tags") {
             steps {
                 script {
