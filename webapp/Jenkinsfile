@@ -24,11 +24,9 @@ pipeline {
     
         stage("Update the Deployment Tags") {
             steps {
-                sh """
-                    cat webapp/deployment.yaml
-                    sed -i 's|${APP_NAME}.*|${APP_NAME}:${IMAGE_TAG}|' webapp/deployment.yaml                    
-                    cat webapp/deployment.yaml
-                """
+                    def yamlFilePath = "webapp/deployment.yaml"  // Update this with the actual path
+                    def updatedYaml = readFile(yamlFilePath).replaceAll(/image: omarbarkallah\/complete-production-e2e-pipeline:.*/, "image: omarbarkallah/complete-production-e2e-pipeline:${params.IMAGE_TAG}")
+                    writeFile(file: yamlFilePath, text: updatedYaml)
             }
         }
 
@@ -37,7 +35,7 @@ pipeline {
                 sh """
                     git config --global user.name "omar"
                     git config --global user.email "barkallah.omar8@gmail.com"
-                    git add webapp/deployment.yaml
+                    git add $yamlFilePath
                     git commit -m "Updated Deployment Manifest"
                 """
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
