@@ -22,30 +22,34 @@ pipeline {
     
 
     
+stages {
         stage("Update the Deployment Tags") {
             steps {
-                script{
+                script {
                     def yamlFilePath = "webapp/deployment.yaml"  // Update this with the actual path
                     def updatedYaml = readFile(yamlFilePath).replaceAll(/image: omarbarkallah\/complete-production-e2e-pipeline:.*/, "image: omarbarkallah/complete-production-e2e-pipeline:${params.IMAGE_TAG}")
                     writeFile(file: yamlFilePath, text: updatedYaml)
+                    sh 'cat webapp/deployment.yaml'
                 }
             }
         }
 
         stage("Push the changed deployment file to Git") {
             steps {
-                sh """
-                    git config --global user.name "omar"
-                    git config --global user.email "barkallah.omar8@gmail.com"
-                    git add $yamlFilePath
-                    git commit -m "Updated Deployment Manifest"
-                """
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh "git push https://github.com/omarbarkallah/gitops-complete-prodcution-e2e-pipeline.git main"
+                script {
+                    def yamlFilePath = "webapp/deployment.yaml"  // Update this with the actual path
+                    
+                    sh """
+                        git config --global user.name "omar"
+                        git config --global user.email "barkallah.omar8@gmail.com"
+                        git add $yamlFilePath
+                        git commit -m "Updated Deployment Manifest"
+                    """
+                    withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                        sh "git push https://github.com/omarbarkallah/gitops-complete-prodcution-e2e-pipeline.git main"
+                    }
                 }
             }
-        }
-
     }
 
 }
