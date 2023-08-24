@@ -24,9 +24,11 @@ pipeline {
     
         stage("Update the Deployment Tags") {
             steps {
+                script{
                     def yamlFilePath = "webapp/deployment.yaml"  // Update this with the actual path
                     def updatedYaml = readFile(yamlFilePath).replaceAll(/image: omarbarkallah\/complete-production-e2e-pipeline:.*/, "image: omarbarkallah/complete-production-e2e-pipeline:${params.IMAGE_TAG}")
                     writeFile(file: yamlFilePath, text: updatedYaml)
+                }
             }
         }
 
