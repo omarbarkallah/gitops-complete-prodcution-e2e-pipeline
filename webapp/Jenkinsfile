@@ -4,7 +4,6 @@ pipeline {
     }
     environment {
         APP_NAME = "complete-prodcution-e2e-pipeline"
-        IMAGE_TAG="1.0.0-29"
     }
 
     stages {
@@ -27,7 +26,7 @@ pipeline {
             steps {
                 sh """
                     cat webapp/deployment.yaml
-                    sed -i "s/\($APP_NAME:\).*$/\1$IMAGE_TAG/g" webapp/deployment.yaml
+                    sed -i "s|$APP_NAME:.*|$APP_NAME:$IMAGE_TAG|g" webapp/deployment.yaml
                     cat webapp/deployment.yaml
                 """
             }
